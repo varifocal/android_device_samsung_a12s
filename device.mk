@@ -48,9 +48,8 @@ PRODUCT_PACKAGES += \
     audio.usb.default \
     audio.primary.universal3830
 
-# Mixer
-PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/configs/mixer/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml
+# Mixer: stock vendor/etc/mixer_paths.xml wins (A12 board routing, codec
+# aud3004x) - extracted as a blob instead of shipping the a21s copy.
 
 # Dolby
 PRODUCT_PACKAGES += \
@@ -168,9 +167,8 @@ $(call soong_config_set,samsungVars,target_keymaster4_library,//vendor/samsung/a
 PRODUCT_PACKAGES += \
     vendor.lineage.health-service.default
 
-# Media
-PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/configs/media/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml
+# Media: stock vendor/etc/media_codecs.xml wins (A12 codec list) - extracted
+# as a blob instead of shipping the a21s copy.
 
 # Memtrack
 PRODUCT_PACKAGES += \
@@ -254,9 +252,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
 
-# Public Libraries
-PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/configs/linker/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
+# Public Libraries: stock vendor/etc/public.libraries.txt wins (lists exactly
+# the extracted A12 blobs) - extracted as a blob instead of the a21s copy.
 
 # RIL
 PRODUCT_PACKAGES += \
@@ -311,10 +308,9 @@ PRODUCT_PACKAGES += \
     hostapd \
     wpa_supplicant
 
-PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/configs/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
-    $(DEVICE_PATH)/configs/wifi/wpa_supplicant.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant.conf \
-    $(DEVICE_PATH)/configs/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
+# Wi-Fi supplicant configs: stock vendor/etc/wifi/{wpa_supplicant.conf,
+# wpa_supplicant_overlay.conf, p2p_supplicant_overlay.conf} win - extracted
+# as blobs instead of shipping the a21s copies.
 
 PRODUCT_CFI_INCLUDE_PATHS += hardware/samsung_slsi/scsc_wifibt/wpa_supplicant_lib
 

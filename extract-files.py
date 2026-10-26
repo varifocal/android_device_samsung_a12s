@@ -36,26 +36,33 @@ lib_fixups: lib_fixups_user_type = {
     ) : lib_fixup_vendor_suffix
 } # fmt: skip
 
-# Blob fixups inherited from a21s-common: same SoC / same stock blob
-# generation (Exynos 850, Android 13). extract-files fails loudly if a
-# pattern does not match an a12s blob, which is the desired behaviour.
+# Blob fixups inherited from a21s-common: same SoC family (Exynos 850),
+# but every fixup was re-verified against stock A127FXXSDDXJ5 - see the
+# a21s-only note inside. extract-files fails loudly if a pattern does not
+# match an a12s blob, which is the desired behaviour.
 blob_fixups: blob_fixups_user_type = {
     'vendor/lib64/libsec-ril.so': blob_fixup()
 	.sig_replace('80 0E 40 F9 E1 03 16 AA 82 0C 80 52 E3 03 15 AA',
             '80 0E 40 F9 E1 03 16 AA 82 0C 80 52 08 00 80 D2'),
-    'vendor/lib64/libcrypto-tm.so': blob_fixup()
-        .replace_needed('libssl.so', 'libssl-tm.so'),
     (
     'vendor/lib/libsensorlistener.so',
     'vendor/lib64/libsensorlistener.so',
     ) : blob_fixup()
         .add_needed('libshim_sensorndkbridge.so'),
-    (
-        'vendor/lib64/libkeymaster_helper.so',
-        'vendor/lib64/libskeymaster4device.so',
-    ) : blob_fixup()
-        .replace_needed('libcrypto.so', 'libcrypto-tm.so')
-        .add_needed('libshim_crypto.so'),
+    # a21s-only fixups deliberately NOT carried over for a12s (verified against
+    # stock A127FXXSDDXJ5):
+    #  - libcrypto-tm.so / libssl-tm.so: absent from the entire stock A12
+    #    firmware (find over all four stock partitions), so the
+    #    replace_needed('libssl.so','libssl-tm.so') fixup targets a file that
+    #    does not exist here.
+    #  - libkeymaster_helper.so / libskeymaster4device.so: stock A12 imports
+    #    libcrypto.so directly (readelf -d), and every crypto symbol they
+    #    import except ASN1_INTEGER_get_uint32 resolves in Lineage's system
+    #    libcrypto (ASN1_INTEGER_get_uint32 is exported by
+    #    vendor/lib64/libkeymaster_helper.so itself). a21s needs
+    #    libcrypto-tm + libshim_crypto because its stock blobs differ; for a12s
+    #    those replacements would create dependencies on files that do not
+    #    exist. shims/libcrypto was removed accordingly.
     (
         'vendor/lib/sensors.grip.so',
         'vendor/lib64/sensors.grip.so',

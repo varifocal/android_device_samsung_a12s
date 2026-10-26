@@ -75,5 +75,5 @@ module = ExtractUtilsModule(
 )
 
 if __name__ == '__main__':
-    utils = ExtractUtils.device(module, module.vendor)
+    utils = ExtractUtils.device(module)
     utils.run()

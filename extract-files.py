@@ -32,7 +32,12 @@ def lib_fixup_vendor_suffix(lib: str, partition: str, *args, **kwargs):
 lib_fixups: lib_fixups_user_type = {
     libs_proto_3_9_1: lib_fixup_vendorcompat,
     (
+        # Stock blobs whose name also belongs to a rust source module
+        # (external/rust/android-crates-io): the extracted cc prebuilt is
+        # renamed _vendor so soong does not pair it with the rust crate
+        # (pairing panics - libuuid - or has no vendor variant - libhyper).
         'libuuid',
+        'libhyper',
     ) : lib_fixup_vendor_suffix
 } # fmt: skip
 

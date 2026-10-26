@@ -162,7 +162,13 @@ TARGET_NO_RECOVERY := false
 
 ## DTB / DTBO
 BOARD_DTB_CFG := $(DEVICE_PATH)/configs/kernel/exynos850.cfg
-BOARD_KERNEL_SEPARATED_DTBO := true
+# Stock dtbo.img is shipped prebuilt (BOARD_PREBUILT_DTBOIMAGE below), so
+# BOARD_KERNEL_SEPARATED_DTBO must stay false: with it true,
+# vendor/lineage/build/tasks/kernel.mk:664 adds a rule that *generates*
+# $(BOARD_PREBUILT_DTBOIMAGE) from kernel sources - i.e. writes into the
+# device tree (kati: "writing to readonly directory"). With it false,
+# build/make/core/Makefile:1054 installs the prebuilt copy instead.
+BOARD_KERNEL_SEPARATED_DTBO := false
 # Brief: keep the stock dtbo.img as a prebuilt for bring-up; Phase 3 keeps the
 # source-built base DTB compatible with these overlays (stock dtbo entries:
 # r00 custom0/1 = 0/0, r01 custom0/1 = 1/0x20, read from dtbo.img header).

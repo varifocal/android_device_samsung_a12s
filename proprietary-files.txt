@@ -4,7 +4,7 @@
 # (~/rom/stock/mnt, read-only). Never from the phone.
 # Category structure follows device/samsung/a21s-common/proprietary-files.txt.
 #
-# Entries: 325
+# Entries: 342
 
 # Configs (stock wins over device tree copy)
 vendor/etc/mixer_paths.xml
@@ -134,6 +134,57 @@ vendor/lib64/hw/memtrack.exynos850.so
 vendor/lib64/hw/power.default.so
 vendor/lib64/hw/vendor.samsung.hardware.audio@1.0-impl.so
 vendor/lib64/hw/vibrator.default.so
+
+# rc -> binary audit (16 unresolved refs over 53 extracted rc files).
+# Every rc shipped in "Init" below must have its /vendor/bin target present,
+# otherwise init restart-loops the service and the VINTF declaration above
+# stays unserved. Added stock binaries (all exist in ~/rom/stock/dump_a12s,
+# extracted from the stock mount copy only):
+#  - clearkey + wifi@1.0: no module of these names exists anywhere in the
+#    Lineage tree (whole-tree grep for "drm@1.4-service" / "wifi@1.0-service"
+#    hits only our own widevine prebuilt), and their stock vintf fragments
+#    (vintf/manifest/manifest_android.hardware.drm@1.4-service.clearkey.xml,
+#    vintf/manifest/android.hardware.wifi@1.0-service.xml) are part of the
+#    extracted manifest set, so the declared HALs need their stock servers.
+#    Source-built android.hardware.drm-service.clearkey (AIDL) and
+#    android.hardware.wifi-service (AIDL, device.mk) install to different
+#    paths and do not collide.
+#  - engmode / vaultkeeper / widevine.keyprov: VINTF-declared via
+#    vintf/manifest/{engmode_manifest,vaultkeeper_manifest,manifest_...keyprov}
+#    .xml but their binaries were missing from earlier entries.
+#  - proca: not VINTF-declared, but pa_daemon_teegris.rc ships and starts it.
+vendor/bin/hw/android.hardware.drm@1.4-service.clearkey
+vendor/bin/hw/android.hardware.wifi@1.0-service
+vendor/bin/vendor.samsung.hardware.security.engmode@1.0-service
+vendor/bin/vendor.samsung.hardware.security.vaultkeeper@2.0-service
+vendor/bin/vendor.samsung.hardware.security.widevine.keyprov@1.0-service
+vendor/bin/vendor.samsung.hardware.security.proca@2.0-service
+
+# Shared libs required by the binaries above (readelf -d NEEDED) that no
+# source module provides: the Samsung security HIDL interface libs, the
+# engmode server lib emservice links, and snap's vndk helper. AOSP-owned
+# deps (libwifi-hal, libwifi-system-iface, libnl, libxml2, the
+# android.hardware.{wifi,drm}@1.x interface libs, libprotobuf-cpp-lite
+# -vendorcompat via the libs_proto_3_9_1 fixup) come from the source build.
+vendor/lib64/vendor.samsung.hardware.security.engmode@1.0.so
+vendor/lib64/vendor.samsung.hardware.security.vaultkeeper@2.0.so
+vendor/lib64/vendor.samsung.hardware.security.widevine.keyprov@1.0.so
+vendor/lib64/libengmode_server.so
+vendor/lib64/libengmode_tlc.so
+vendor/lib64/libengmode2lite.so
+vendor/lib64/libsnap_vndk.so
+
+# Stock daemons started by extracted init rc files with no source module of
+# the same name in the tree (argos.rc, emservice.rc, snap_utility.rc,
+# wifi_slsi.rc). cbd and secril_config_svc are deliberately NOT extracted:
+# source modules hardware/samsung_slsi-linaro/exynos/cpboot_v3 and
+# hardware/samsung/ril/secril_config_svc install to exactly
+# /vendor/bin/cbd and /vendor/bin/secril_config_svc, which is what
+# init.baseband.rc / init.vendor.rilcommon.rc expect.
+vendor/bin/argosd
+vendor/bin/emservice
+vendor/bin/snap_utility_64
+vendor/bin/wlbtd
 
 # Init (stock vendor/etc/init rc files)
 vendor/etc/init/android.hardware.drm@1.4-service.clearkey.rc

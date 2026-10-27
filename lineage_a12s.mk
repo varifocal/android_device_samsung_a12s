@@ -14,6 +14,17 @@
 # limitations under the License.
 #
 
+# CAS HAL: stock Samsung ships only the lazy HIDL service
+# (vendor/bin/hw/android.hardware.cas@1.2-service-lazy + its rc and vintf
+# fragment, all extracted to vendor/samsung/a12s). base_vendor.mk:98-101
+# installs the AOSP non-lazy android.hardware.cas@1.2-service for shipping
+# API <= 33 unless this is false; that source module builds 32-bit only, and
+# installing it next to stock's lazy service would double-declare
+# android.hardware.cas@1.2::ICas/default (duplicate vintf fragment + two init
+# services). Must be set before the core product inherits below (base_vendor.mk
+# is parsed there), hence it lives here and not in device.mk.
+TARGET_REQUIRES_HIDL_CAS_HAL := false
+
 ## Inherit from generic products, most specific first
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)

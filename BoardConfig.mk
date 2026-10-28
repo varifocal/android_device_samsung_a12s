@@ -147,7 +147,8 @@ DEVICE_MATRIX_FILE := $(DEVICE_PATH)/vintf/compatibility_matrix.xml
 
 ## Partitions (brief partition table + file sizes: stock boot.img 46137344,
 ## stock recovery.img 55574528, stock dtbo.img 8388608 - Samsung pads images to
-## the partition size; cache size has no evidence on disk, a21s value kept)
+## the partition size; cache size 209715200 verified on device with
+## `blockdev --getsize64 /dev/block/by-name/cache`, same as a21s)
 BOARD_BOOTIMAGE_PARTITION_SIZE := 46137344
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 55574528
 BOARD_DTBOIMG_PARTITION_SIZE := 8388608

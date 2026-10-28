@@ -55,8 +55,10 @@ only).
 8. **Camera `extra_ids`**: a21s sets `samsungCameraVars extra_ids 52,54` for
    its depth/macro cameras; a12's camera IDs are not derivable from anything
    on disk → deliberately omitted (TODO-CAMERA).
-9. **Cache size** `209715200` is a21s's value: stock has no cache partition
-   evidence on disk (all four dynamic partitions + userdata only).
+9. **Cache size** `209715200` **verified on the phone**:
+   `blockdev --getsize64 /dev/block/by-name/cache` = `209715200` (measured
+   2026-10-28, same value a21s uses). Stock images still carry no cache
+   evidence (all four dynamic partitions + userdata only).
 10. **`VENDOR_SECURITY_PATCH := 2024-10-01`** (stock
     `ro.vendor.build.security_patch`), a21s uses 2024-05-01.
 

@@ -40,9 +40,21 @@ def AddImage(info, basename, dest):
   info.script.AppendExtra('package_extract_file("%s", "%s");' % (name, dest))
 
 def OTA_Assertions(info):
+  # a12s: device/model asserts + bootloader minimum.
+  # Bootloader version string: androidboot.bootloader=A127FXXSDDXJ5 on the
+  # reference device (matches ro.*.build.version.incremental=A127FXXSDDXJ5 in
+  # ~/rom/dump/odm.build.prop:19). Format: model(5) + SW id(3) + BL binary
+  # version letter (index 8, the 9th char) + revision(4). Stock letter 'D'.
+  # NOTE: ~/rom/dump/sec_debug.bin does NOT exist (verified 2026-10-28), so
+  # 'D' is derived from the bootloader string alone; older units' letters are
+  # unverified (TODO: confirm minimum on an unopened Android 11 unit).
   cmd = (
+      'assert(getprop("ro.product.device") == "a12s" || '
+      'abort("ERROR: This build is for the Galaxy A12 (a12s) only."););'
+      'assert(getprop("ro.product.model") == "SM-A127F" || '
+      'abort("ERROR: This build is for model SM-A127F only."););'
       'assert(exynos850.verify_bootloader_min("") == "1" || '
-      'abort("ERROR: This build requires a bootloader with binary version C. Please update your firmware."););'
+      'abort("ERROR: This build requires a bootloader with binary version D or newer (stock is A127FXXSDDXJ5). Please update your firmware."););'
   )
   info.script.AppendExtra(cmd)
   return

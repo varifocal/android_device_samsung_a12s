@@ -85,6 +85,41 @@ vendor/firmware/nfc/libpn557_fw.so
 # fsgen resolves it against the 64-bit target and fails with
 # "missing variant: arch:arm64_armv8-a". Install path (stem) is unchanged.
 vendor/bin/hw/android.hardware.cas@1.2-service-lazy;MODULE_SUFFIX=_samsung
+# Stock audio HAL server (32-bit, 11 KB): registers IDevicesFactory@4.0-7.1 and
+# vendor.samsung.hardware.audio@1.0::ISehDevicesFactory, and creates the
+# BluetoothAudioProviderFactory (android.hardware.bluetooth.audio@2.0/2.1/2.2
+# plus vendor.samsung_slsi and ISeh AIDL). EXTRACT_ONLY: no soong module is
+# generated (a same-named module collides with the AOSP source
+# android.hardware.audio.service install/symbols rules - "multiple rules
+# generate .../symbols/.../android.hardware.audio.service"; a suffixed name
+# still installs at the stock path via stem, same collision). Installed at a
+# renamed path by PRODUCT_COPY_FILES in device.mk; the extracted stock rc is
+# patched (extract-files.py blob_fixup) to point at the renamed path.
+# Hard DT_NEEDED: vendor.samsung_slsi.hardware.ExynosA2DPOffload@2.0.so
+# (32-bit only in stock) - without it the binary cannot link-load at all.
+vendor/bin/hw/android.hardware.audio.service;EXTRACT_ONLY
+vendor/etc/init/android.hardware.audio.service.rc
+vendor/lib/vendor.samsung_slsi.hardware.ExynosA2DPOffload@2.0.so
+# DT_NEEDED of the offload lib above (Samsung a2dp HIDL stub, 32-bit only):
+vendor/lib/android.hardware.bluetooth.a2dp@1.0.so
+# Stock bluetooth HAL server (64-bit): registers
+# android.hardware.bluetooth@1.0::IBluetoothHci/default AND
+# vendor.samsung.hardware.bluetooth@2.0::ISehBluetooth/default (both declared
+# in the stock rc). Same EXTRACT_ONLY + renamed-path install as the audio
+# server above.
+vendor/bin/hw/android.hardware.bluetooth@1.0-service;EXTRACT_ONLY
+vendor/etc/init/android.hardware.bluetooth@1.0-service.rc
+# Implementation of vendor.samsung.hardware.bluetooth.audio
+# (ISehBluetoothAudioProviderFactory/default, declared in our
+# vintf/manifest/bluetooth_audio.xml); dlopened by the stock audio server.
+vendor/lib/vendor.samsung.hardware.bluetooth.audio-impl.so
+vendor/lib64/vendor.samsung.hardware.bluetooth.audio-impl.so
+# DT_NEEDED of the impl above (AIDL stub + session lib; not built from source
+# anywhere in the tree):
+vendor/lib/vendor.samsung.hardware.bluetooth.audio-V1-ndk.so
+vendor/lib64/vendor.samsung.hardware.bluetooth.audio-V1-ndk.so
+vendor/lib/libsehbluetooth_audio_session_aidl.so
+vendor/lib64/libsehbluetooth_audio_session_aidl.so
 vendor/bin/hw/android.hardware.dumpstate-service
 vendor/bin/hw/android.hardware.usb@1.3-service.coral
 vendor/bin/hw/android.hardware.graphics.allocator@4.0-service

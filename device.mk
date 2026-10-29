@@ -37,16 +37,21 @@ $(call inherit-product, hardware/samsung_slsi-linaro/config/config.mk)
 
 PRODUCT_CHARACTERISTICS := phone
 
-# Audio
+# Audio: stock server (Q18). The AOSP source modules
+# android.hardware.audio.service / @7.0-impl / effect@7.0-impl and
+# audio.primary.universal3830 are deliberately NOT installed as source: the
+# extracted stock server (32-bit) registers ISehDevicesFactory + the
+# BluetoothAudioProvider factories and is installed at a renamed path via
+# PRODUCT_COPY_FILES below (EXTRACT_ONLY blob; a soong module would collide
+# with the AOSP source server's install/symbols rules).
+# audio.r_submix.default / audio.usb.default resolve to the extracted stock
+# blobs of the same module name (vendor/Android.bp prebuilt replaces source).
 PRODUCT_PACKAGES += \
-    android.hardware.audio.effect@7.0-impl \
-    android.hardware.audio@7.0-impl \
-    android.hardware.audio.service \
-    android.hardware.bluetooth.audio-impl \
-    audio.bluetooth.default \
     audio.r_submix.default \
-    audio.usb.default \
-    audio.primary.universal3830
+    audio.usb.default
+
+PRODUCT_COPY_FILES += \
+    vendor/samsung/a12s/proprietary/vendor/bin/hw/android.hardware.audio.service:$(TARGET_COPY_OUT_VENDOR)/bin/hw/android.hardware.audio.service.samsung
 
 # Mixer: stock vendor/etc/mixer_paths.xml wins (A12 board routing, codec
 # aud3004x) - extracted as a blob instead of shipping the a21s copy.
@@ -70,11 +75,18 @@ PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
     $(DEVICE_PATH)/configs/audio/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml
 
-# Bluetooth
+# Bluetooth: stock server (registers IBluetoothHci and the Samsung
+# ISehBluetooth@2.0 extension; stock rc declares both). Installed at a
+# renamed path via PRODUCT_COPY_FILES below (EXTRACT_ONLY blob, same
+# rationale as the audio server above).
+# The @1.0-impl entry keeps the extracted stock passthrough impl installed
+# (blob module of that name replaces the AOSP source module of the same name).
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-impl:64 \
-    android.hardware.bluetooth@1.0-service \
     libbt-vendor:64
+
+PRODUCT_COPY_FILES += \
+    vendor/samsung/a12s/proprietary/vendor/bin/hw/android.hardware.bluetooth@1.0-service:$(TARGET_COPY_OUT_VENDOR)/bin/hw/android.hardware.bluetooth@1.0-service.samsung
 
 PRODUCT_COPY_FILES += \
     hardware/samsung_slsi/libbt/conf/bt_did.conf:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth/bt_did.conf \

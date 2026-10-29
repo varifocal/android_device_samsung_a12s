@@ -76,6 +76,20 @@ blob_fixups: blob_fixups_user_type = {
     ) : blob_fixup()
         .add_needed('libutils-v32.so')
         .binary_regex_replace(b'_ZN7android6Thread3runEPKcim', b'_ZN7utils326Thread3runEPKcim'),
+    # Stock audio/BT HAL servers are installed at renamed paths
+    # (vendor/bin/hw/*.samsung, PRODUCT_COPY_FILES in device.mk; the binaries
+    # themselves are EXTRACT_ONLY so no soong module collides with the AOSP
+    # source servers). Point the stock service lines at the renamed binaries.
+    'vendor/etc/init/android.hardware.audio.service.rc': blob_fixup()
+        .regex_replace(
+            r'/vendor/bin/hw/android\.hardware\.audio\.service\n',
+            '/vendor/bin/hw/android.hardware.audio.service.samsung\n',
+        ),
+    'vendor/etc/init/android.hardware.bluetooth@1.0-service.rc': blob_fixup()
+        .regex_replace(
+            r'/vendor/bin/hw/android\.hardware\.bluetooth@1\.0-service\n',
+            '/vendor/bin/hw/android.hardware.bluetooth@1.0-service.samsung\n',
+        ),
 }  # fmt: skip
 
 module = ExtractUtilsModule(

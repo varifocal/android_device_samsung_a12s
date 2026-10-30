@@ -24,9 +24,6 @@ vendor/lib64/nfc_nci_nxpsn.so
 vendor/lib64/vendor.samsung.hardware.nfc@2.0.so
 vendor/lib64/vendor.samsung.hardware.biometrics.face-V2-ndk.so
 vendor/lib64/vendor.samsung.hardware.biometrics.fingerprint@3.0.so
-vendor/lib64/vendor.samsung.hardware.camera.device@5.0.so
-vendor/lib64/vendor.samsung.hardware.camera.provider@4.0.so
-vendor/lib64/vendor.samsung.hardware.camera.provider@4.0-legacy.so
 vendor/lib64/vendor.samsung.hardware.health-V1-ndk.so
 vendor/lib64/libhqm_hwparam.so
 vendor/lib64/vendor.samsung.hardware.hqm@1.0.so
@@ -59,7 +56,6 @@ vendor/lib64/vendor.samsung.hardware.bluetooth@2.0.so
 vendor/lib64/libsecaudioinfo.so
 vendor/lib64/libspeakercalibration.so
 vendor/lib64/vendor.samsung.frameworks.security.dsms@1.0.so
-vendor/lib64/vendor.samsung.hardware.camera.device@5.0-impl.so
 vendor/lib64/libtlc_comm_iccc.so
 vendor/lib64/libtlc_direct_comm_iccc.so
 vendor/lib64/libucm_tlc_tz_esecomm.so
@@ -127,7 +123,6 @@ vendor/bin/hw/mfgloader
 vendor/bin/hw/nxp.android.hardware.nfc@1.2-service
 vendor/bin/hw/vendor.samsung.hardware.biometrics.face-service
 vendor/bin/hw/vendor.samsung.hardware.biometrics.fingerprint@3.0-service
-vendor/bin/hw/vendor.samsung.hardware.camera.provider@4.0-service_64
 vendor/bin/hw/vendor.samsung.hardware.hqm@1.0-service
 vendor/bin/hw/vendor.samsung.hardware.hyper-service
 vendor/bin/hw/vendor.samsung.hardware.light-service
@@ -240,7 +235,6 @@ vendor/etc/init/pa_daemon_teegris.rc
 vendor/etc/init/snap_utility.rc
 vendor/etc/init/teegris.rc
 vendor/etc/init/vendor.samsung.hardware.biometrics.fingerprint@3.0-service.rc
-vendor/etc/init/vendor.samsung.hardware.camera.provider@4.0-service_64.rc
 vendor/etc/init/vendor.samsung.hardware.hqm@1.0-service.rc
 vendor/etc/init/vendor.samsung.hardware.miscpower@2.0-service.rc
 vendor/etc/init/vendor.samsung.hardware.security.drk@2.0-service.rc

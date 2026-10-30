@@ -17,6 +17,13 @@ odm     /odm    ext4    ro,errors=panic wait,logical,first_stage_mount
 /dev/block/by-name/cpefs        /mnt/vendor/cpefs       ext4    noatime,nosuid,nodev,noauto_da_alloc,discard,journal_checksum,data=ordered,errors=panic wait,check,nofail
 /dev/block/by-name/misc /misc   emmc    defaults        defaults,first_stage_mount
 
+# Recovery-only raw partitions (same lines as a21s-common fstab:14-15).
+# recoveryonly keeps them out of normal boot; recovery needs them so the
+# non-A/B OTA can look up /boot and /recovery (CheckSize, common.py:2621
+# crashed with KeyError '/recovery' without these) and flash them.
+/dev/block/by-name/boot                                 /boot                   emmc    defaults                                                                                recoveryonly
+/dev/block/by-name/recovery                             /recovery               emmc    defaults                                                                                recoveryonly
+
 # VOLD:fstab.exynos850
 /devices/platform/13500000.dwmmc2/mmc_host*     auto    auto    default voldmanaged=sdcard:auto
 /devices/platform/13600000.usb* auto    vfat    default voldmanaged=usb:auto

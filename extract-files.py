@@ -61,21 +61,35 @@ blob_fixups: blob_fixups_user_type = {
     #    replace_needed('libssl.so','libssl-tm.so') fixup targets a file that
     #    does not exist here.
     #  - libkeymaster_helper.so / libskeymaster4device.so: stock A12 imports
-    #    libcrypto.so directly (readelf -d), and every crypto symbol they
-    #    import except ASN1_INTEGER_get_uint32 resolves in Lineage's system
-    #    libcrypto (ASN1_INTEGER_get_uint32 is exported by
-    #    vendor/lib64/libkeymaster_helper.so itself). a21s needs
-    #    libcrypto-tm + libshim_crypto because its stock blobs differ; for a12s
-    #    those replacements would create dependencies on files that do not
-    #    exist. shims/libcrypto was removed accordingly.
+    #    libcrypto.so directly (readelf -d). a21s needs libcrypto-tm +
+    #    libshim_crypto because its stock blobs differ; for a12s those
+    #    replacements would create dependencies on files that do not exist.
+    #    UPDATE (A3 sweep): libkeymaster_helper.so DOES fail check_elf_file on
+    #    one symbol, sk_delete (old BoringSSL name) - fixed with
+    #    libshim_boringssl below, not with a crypto replacement.
     (
-        'vendor/lib/sensors.grip.so',
-        'vendor/lib64/sensors.grip.so',
-        'vendor/lib/sensors.sensorhub.so',
-        'vendor/lib64/sensors.sensorhub.so',
+    'vendor/lib/sensors.grip.so',
+    'vendor/lib64/sensors.grip.so',
+    'vendor/lib/sensors.sensorhub.so',
+    'vendor/lib64/sensors.sensorhub.so',
     ) : blob_fixup()
         .add_needed('libutils-v32.so')
         .binary_regex_replace(b'_ZN7android6Thread3runEPKcim', b'_ZN7utils326Thread3runEPKcim'),
+    # lineage-23.2 ABI shims for check_elf_file failures found in the A3
+    # one-pass sweep (~/rom/logs/elf_failures_all.md). Each shim module is
+    # in PRODUCT_PACKAGES (device.mk) - add_needed alone installs nothing.
+    'vendor/lib64/nfc_nci_nxpsn.so': blob_fixup()
+        # old non-template android::base::Trim(std::string const&)
+        .add_needed('libshim_libbase.so'),
+    'vendor/lib64/libkeymaster_helper.so': blob_fixup()
+        # old BoringSSL sk_delete(); 23.2 libcrypto only has OPENSSL_sk_delete
+        .add_needed('libshim_boringssl.so'),
+    (
+        'vendor/lib/libexynoscamera3.so',
+        'vendor/lib64/libexynoscamera3.so',
+    ) : blob_fixup()
+        # old 1-arg GraphicBufferMapper::unlock(native_handle const*)
+        .add_needed('libshim_libui_mapper.so'),
     # Stock audio/BT HAL servers are installed at renamed paths
     # (vendor/bin/hw/*.samsung, PRODUCT_COPY_FILES in device.mk; the binaries
     # themselves are EXTRACT_ONLY so no soong module collides with the AOSP

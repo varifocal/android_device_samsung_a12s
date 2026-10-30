@@ -1,0 +1,33 @@
+//
+// Copyright (C) 2026 The LineageOS Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Shim for libexynoscamera3.so: it imports the old one-argument
+// android::GraphicBufferMapper::unlock(native_handle const*) that 23.2's
+// libui dropped (only the unlock(handle, unique_fd*) overload is exported).
+// The shim method delegates to the exported overload; it touches no members,
+// so no class-layout assumption is made (unlike the rejected SecC2 shim).
+// Consumers: libexynoscamera3.so (elf_failures_all.md #1/#2), loaded by
+// camera.exynos850.so, which the source camera provider hw_get_modules.
+
+cc_library_shared {
+    name: "libshim_libui_mapper",
+    srcs: ["GraphicBufferMapperUnlock.cpp"],
+    shared_libs: [
+        "libbase",
+        "libui",
+    ],
+    compile_multilib: "both",
+    vendor: true,
+}

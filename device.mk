@@ -113,6 +113,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.vibrator-service.samsung
 
+# Shims for stock blobs against lineage-23.2 platform libs
+# (check_elf_file failures, see ~/rom/logs/elf_failures_all.md; every shim
+#  must be in PRODUCT_PACKAGES or the blob_fixup add_needed points at nothing)
+PRODUCT_PACKAGES += \
+    libshim_libbase \
+    libshim_boringssl \
+    libshim_libui_mapper
+
 # Display
 PRODUCT_PACKAGES += \
     android.hardware.composer.hwc3-service.slsi \

@@ -1,0 +1,62 @@
+<!--
+     a12s device-side framework compatibility matrix.
+
+     The 6 Samsung HALs below are served by shipped stock services but are not
+     covered by hardware/samsung/vintf/samsung_framework_compatibility_matrix.xml
+     (ISehWifi there stops at 2.0; the others are absent). At FCM target-level 6
+     checkvintf rejects device-manifest instances that no framework matrix
+     specifies ("The following instances are in the device manifest but not
+     specified in framework compatibility matrix"), so they are declared here -
+     the fix checkvintf itself suggests (DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE).
+     Merged into system/etc/vintf/compatibility_matrix.device.xml.
+-->
+<compatibility-matrix version="2.0" type="framework">
+    <hal format="hidl" optional="true">
+        <name>vendor.samsung.hardware.biometrics.fingerprint</name>
+        <version>3.0</version>
+        <interface>
+            <name>ISehBiometricsFingerprint</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.samsung.hardware.hqm</name>
+        <version>1.0</version>
+        <interface>
+            <name>ISehHqm</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="aidl" optional="true">
+        <name>vendor.samsung.hardware.hyper</name>
+        <version>2</version>
+        <interface>
+            <name>ISehHyPer</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.samsung.hardware.security.engmode</name>
+        <version>1.0</version>
+        <interface>
+            <name>ISehEngmode</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.samsung.hardware.tlc.kg</name>
+        <version>1.1</version>
+        <interface>
+            <name>ISehKg</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.samsung.hardware.wifi</name>
+        <version>2.3</version>
+        <interface>
+            <name>ISehWifi</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+</compatibility-matrix>

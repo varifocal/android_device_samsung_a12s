@@ -14,7 +14,12 @@
         radio_manifest_ds.xml
         manifest_chip.xml
 -->
-<manifest version="5.0" type="device" target-level="5">
+<!-- stock ships target-level="5"; raised to 6 for lineage-23.2: the level-5
+     framework matrix in 23.2 is an empty deprecated stub with no 4.19.y kernel
+     entry, so checkvintf --check-compat rejects "kernel FCM 5" (KernelInfo.cpp:183).
+     Level 6 declares exactly 4.19.325 = our kernel, and covers every stock HIDL
+     entry. a21s official also builds at target-level 6. -->
+<manifest version="5.0" type="device" target-level="6">
     <hal format="hidl">
         <name>android.hardware.audio</name>
         <transport>hwbinder</transport>
@@ -127,16 +132,10 @@
         <fqname>@1.0::IOmx/default</fqname>
         <fqname>@1.0::IOmxStore/default</fqname>
     </hal>
-    <hal format="hidl">
-        <name>android.hardware.memtrack</name>
-        <transport>hwbinder</transport>
-        <version>1.0</version>
-        <interface>
-            <name>IMemtrack</name>
-            <instance>default</instance>
-        </interface>
-        <fqname>@1.0::IMemtrack/default</fqname>
-    </hal>
+    <!-- stock declares android.hardware.memtrack@1.0::IMemtrack/default here;
+         removed for FCM target-level 6: no stock memtrack service is shipped
+         (only impl libs), the source android.hardware.memtrack-service.samsung-mali
+         serves the AIDL IMemtrack/default via its own Soong fragment. -->
     <hal format="hidl" override="true">
         <name>android.hardware.radio</name>
         <transport>hwbinder</transport>
@@ -300,5 +299,5 @@
         <name>vendor.samsung_slsi.hardware.radio</name>
         <transport>hwbinder</transport>
     </hal>
-    <kernel target-level="5"/>
+    <kernel target-level="6"/>
 </manifest>

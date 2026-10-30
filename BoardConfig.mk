@@ -138,9 +138,13 @@ $(call soong_config_set,lineage_health,fast_charge_value_fast_charge,0)
 
 ## VINTF (stock files, verified: dump/manifest.xml == stock vendor manifest;
 ## dump/compatibility_matrix.xml == stock vendor matrix; plus the 29 stock
-## manifest/ fragments. Manifest target-level stays 5 as stock - see README.)
+## manifest/ fragments. Target-level is 6, not stock's 5 - the 23.2 level-5
+## FCM stub has no 4.19.y kernel entry, so checkvintf rejects kernel FCM 5;
+## a21s official also builds at 6. The stock vendor-ndk 33 requirement is
+## dropped from the device matrix (23.2 framework manifest declares none).)
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
-    hardware/samsung/vintf/samsung_framework_compatibility_matrix.xml
+    hardware/samsung/vintf/samsung_framework_compatibility_matrix.xml \
+    $(DEVICE_PATH)/vintf/a12s_framework_compatibility_matrix.xml
 DEVICE_MANIFEST_FILE := $(DEVICE_PATH)/vintf/manifest.xml
 DEVICE_MANIFEST_FILE += $(wildcard $(DEVICE_PATH)/vintf/manifest/*.xml)
 DEVICE_MATRIX_FILE := $(DEVICE_PATH)/vintf/compatibility_matrix.xml

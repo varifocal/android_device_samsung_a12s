@@ -101,9 +101,11 @@
             <instance>default</instance>
         </interface>
     </hal>
-    <vendor-ndk>
-        <version>33</version>
-    </vendor-ndk>
+    <!-- stock demands <vendor-ndk><version>33</version></vendor-ndk>; dropped:
+         the lineage-23.2 framework manifest declares no vendor-ndk versions
+         (VNDK is retired), so checkvintf --check-compat rejects it. The a21s
+         official matrix carries no vendor-ndk block either. system-sdk 30 is
+         still supported (framework manifest lists 29-36). -->
     <system-sdk>
         <version>30</version>
     </system-sdk>

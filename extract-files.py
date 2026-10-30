@@ -89,6 +89,33 @@ blob_fixups: blob_fixups_user_type = {
         .regex_replace(
             r'/vendor/bin/hw/android\.hardware\.bluetooth@1\.0-service\n',
             '/vendor/bin/hw/android.hardware.bluetooth@1.0-service.samsung\n',
+        )
+        .regex_replace(
+            r'[ \t]+interface vendor\.samsung[^\n]*\n',
+            '',
+        ),
+    # host_init_verifier rejects HIDL `interface` lines that name an
+    # interface with no hidl_interface target in the tree (no .hal sources):
+    # all vendor.samsung.hardware.* / ISeh* packages. Stripping the
+    # bookkeeping line keeps the service running (class hal / lazy start via
+    # the kept AOSP interface lines is unaffected); the binaries still
+    # register their Samsung interfaces with hwservicemanager at runtime.
+    # AOSP interface lines (IBluetoothHci, INfc, ICameraProvider, ...) are
+    # untouched. See ~/rom/logs/request.md for the full analysis.
+    (
+        'vendor/etc/init/nxp.android.hardware.nfc@1.2-service.rc',
+        'vendor/etc/init/vendor.samsung.hardware.camera.provider@4.0-service_64.rc',
+        'vendor/etc/init/vendor.samsung.hardware.hqm@1.0-service.rc',
+        'vendor/etc/init/vendor.samsung.hardware.security.drk@2.0-service.rc',
+        'vendor/etc/init/vendor.samsung.hardware.security.widevine.keyprov@1.0-service.rc',
+        'vendor/etc/init/vendor.samsung.hardware.tlc.iccc@1.0-service.rc',
+        'vendor/etc/init/vendor.samsung.hardware.tlc.kg@1.1-service.rc',
+        'vendor/etc/init/vendor.samsung.hardware.tlc.ucm@2.0-service.rc',
+        'vendor/etc/init/vendor.samsung.hardware.wifi@2.0-service.rc',
+    ) : blob_fixup()
+        .regex_replace(
+            r'[ \t]+interface vendor\.samsung[^\n]*\n',
+            '',
         ),
 }  # fmt: skip
 

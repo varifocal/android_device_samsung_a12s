@@ -67,14 +67,14 @@ blob_fixups: blob_fixups_user_type = {
     #    UPDATE (A3 sweep): libkeymaster_helper.so DOES fail check_elf_file on
     #    one symbol, sk_delete (old BoringSSL name) - fixed with
     #    libshim_boringssl below, not with a crypto replacement.
-    (
-    'vendor/lib/sensors.grip.so',
-    'vendor/lib64/sensors.grip.so',
-    'vendor/lib/sensors.sensorhub.so',
-    'vendor/lib64/sensors.sensorhub.so',
-    ) : blob_fixup()
-        .add_needed('libutils-v32.so')
-        .binary_regex_replace(b'_ZN7android6Thread3runEPKcim', b'_ZN7utils326Thread3runEPKcim'),
+    # REMOVED (dead fixup): the sensor-blob libutils-v32 block that was here
+    # was a no-op. sensors.grip.so uses raw pthread_create and
+    # sensors.sensorhub.so has no android::Thread references at all, so the
+    # binary_regex_replace target _ZN7android6Thread3runEPKcim matched nothing;
+    # the only effect was a useless add_needed('libutils-v32.so'). The one blob
+    # that DOES subclass android::Thread (vendor/lib/libsensorlistener.so) was
+    # never a target of this block and still resolves libutils via the platform.
+    #
     # lineage-23.2 ABI shims for check_elf_file failures found in the A3
     # one-pass sweep (~/rom/logs/elf_failures_all.md). Each shim module is
     # in PRODUCT_PACKAGES (device.mk) - add_needed alone installs nothing.

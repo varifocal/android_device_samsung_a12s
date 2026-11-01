@@ -67,6 +67,12 @@ vendor/firmware/dual_cal_wide_sub.bin
 vendor/firmware/setfile_gc5035.bin
 vendor/firmware/tdnr_GC5035.json
 vendor/firmware/nfc/libpn557_fw.so
+vendor/firmware/tsp_novatek/nt36525_a12s_csot.bin|155b6203c5757e014f898da1d635364f7fb14d0f
+vendor/firmware/tsp_novatek/nt36525_a12s_dtc.bin|63474039fb2ccd47ff506cb40605591280368cbd
+vendor/firmware/tsp_novatek/nt36525_a12s_mp_csot.bin|0b458b04dd65cd60c4933673386c0f3bb6022fd7
+vendor/firmware/tsp_novatek/nt36525_a12s_mp_dtc.bin|49b69ede94527f63cc1865434174a77e6cb3fff2
+vendor/firmware/tsp_novatek/nt36525_a12s_mp_sharp.bin|fc57026edfff96f10a577b5dd17a77893f40f7b1
+vendor/firmware/tsp_novatek/nt36525_a12s_sharp.bin|5f90be7c1ed44121143402200ff8acb857f801b9
 
 # HAL services and implementations (stock hals.txt)
 # Stock's lazy CAS service. The module name gets a suffix because AOSP also
